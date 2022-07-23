@@ -23,6 +23,8 @@ class TimeRange extends StatefulWidget {
   final Color? activeBackgroundColor;
   final TextStyle? textStyle;
   final TextStyle? activeTextStyle;
+  final ScrollController? fromScrollController;
+  final ScrollController? toScrollController;
 
   TimeRange({
     Key? key,
@@ -42,6 +44,8 @@ class TimeRange extends StatefulWidget {
     this.activeBackgroundColor,
     this.textStyle,
     this.activeTextStyle,
+    this.fromScrollController,
+    this.toScrollController,
   })  : assert(
             lastTime.after(firstTime), 'lastTime can not be before firstTime'),
         super(key: key);
@@ -98,13 +102,14 @@ class _TimeRangeState extends State<TimeRange> {
           activeBackgroundColor: widget.activeBackgroundColor,
           textStyle: widget.textStyle,
           activeTextStyle: widget.activeTextStyle,
+          scrollController: widget.fromScrollController,
         ),
         if (widget.toTitle != null)
           Padding(
             padding: EdgeInsets.only(left: widget.titlePadding, top: 8),
             child: widget.toTitle,
           ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TimeList(
           firstTime: _getFirstTimeEndHour(),
           lastTime: widget.lastTime,
@@ -118,6 +123,7 @@ class _TimeRangeState extends State<TimeRange> {
           activeBackgroundColor: widget.activeBackgroundColor,
           textStyle: widget.textStyle,
           activeTextStyle: widget.activeTextStyle,
+          scrollController: widget.toScrollController,
         ),
       ],
     );

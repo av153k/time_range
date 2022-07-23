@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_range/src/arrow_button.dart';
 import 'package:time_range/src/time_button.dart';
 import 'util/time_of_day_extension.dart';
 
@@ -17,6 +18,7 @@ class TimeList extends StatefulWidget {
   final Color? activeBackgroundColor;
   final TextStyle? textStyle;
   final TextStyle? activeTextStyle;
+  final ScrollController? scrollController;
 
   TimeList({
     Key? key,
@@ -32,6 +34,7 @@ class TimeList extends StatefulWidget {
     this.activeBackgroundColor,
     this.textStyle,
     this.activeTextStyle,
+    this.scrollController
   })  : assert(lastTime.afterOrEqual(firstTime),
             'lastTime not can be before firstTime'),
         super(key: key);
@@ -41,7 +44,7 @@ class TimeList extends StatefulWidget {
 }
 
 class _TimeListState extends State<TimeList> {
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController = ScrollController();
   final double itemExtent = 90;
   TimeOfDay? _selectedHour;
   List<TimeOfDay?> hours = [];
@@ -49,6 +52,9 @@ class _TimeListState extends State<TimeList> {
   @override
   void initState() {
     super.initState();
+    if (widget.scrollController != null) {
+      _scrollController = widget.scrollController!;
+    }
     _initialData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animateScroll(hours.indexOf(widget.initialTime));
@@ -97,30 +103,50 @@ class _TimeListState extends State<TimeList> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 45,
-      child: ListView.builder(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.only(left: widget.padding),
-        itemCount: hours.length,
-        itemExtent: itemExtent,
-        itemBuilder: (BuildContext context, int index) {
-          final hour = hours[index]!;
-
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: TimeButton(
-              borderColor: widget.borderColor,
-              activeBorderColor: widget.activeBorderColor,
-              backgroundColor: widget.backgroundColor,
-              activeBackgroundColor: widget.activeBackgroundColor,
-              textStyle: widget.textStyle,
-              activeTextStyle: widget.activeTextStyle,
-              time: hour.format(context),
-              value: _selectedHour == hour,
-              onSelect: (_) => _selectHour(index, hour),
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ArrowButton(
+            direction: ArrowDirection.left,
+            borderColor: widget.borderColor,
+            backgroundColor: widget.backgroundColor,
+            onTap: _scrollLeft,
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              // padding: EdgeInsets.only(left: widget.padding),
+              itemCount: hours.length,
+              itemExtent: itemExtent,
+              itemBuilder: (BuildContext context, int index) {
+                final hour = hours[index]!;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: TimeButton(
+                    borderColor: widget.borderColor,
+                    activeBorderColor: widget.activeBorderColor,
+                    backgroundColor: widget.backgroundColor,
+                    activeBackgroundColor: widget.activeBackgroundColor,
+                    textStyle: widget.textStyle,
+                    activeTextStyle: widget.activeTextStyle,
+                    time: hour.format(context),
+                    value: _selectedHour == hour,
+                    onSelect: (_) => _selectHour(index, hour),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          ArrowButton(
+            direction: ArrowDirection.right,
+            borderColor: widget.borderColor,
+            backgroundColor: widget.backgroundColor,
+            onTap: _scrollRight,
+          ),
+        ],
       ),
     );
   }
@@ -138,6 +164,19 @@ class _TimeListState extends State<TimeList> {
       offset = _scrollController.position.maxScrollExtent;
     }
     _scrollController.animateTo(offset,
-        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    setState(() {});
+  }
+
+  void _scrollLeft() {
+    _scrollController.animateTo(_scrollController.offset - itemExtent,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    setState(() {});
+  }
+
+  void _scrollRight() {
+    _scrollController.animateTo(_scrollController.offset + itemExtent,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    setState(() {});
   }
 }

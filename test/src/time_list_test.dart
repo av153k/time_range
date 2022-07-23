@@ -133,6 +133,69 @@ void main() {
           );
         },
       );
+      group(
+        'scroll',
+        () {
+          testWidgets(
+            'find scroll arrows and test those',
+            (WidgetTester tester) async {
+              ScrollController scrollController = ScrollController();
+              await tester.pumpApp(
+                TimeList(
+                  timeStep: ParamFactory.timeStep,
+                  firstTime: ParamFactory.firstTime,
+                  lastTime: ParamFactory.secondTime,
+                  activeBackgroundColor: ParamFactory.blue,
+                  backgroundColor: ParamFactory.purple,
+                  onHourSelected: (hour) {},
+                  scrollController: scrollController,
+                ),
+              );
+
+              final leftArrow = find.byWidgetPredicate((widget) {
+                if (widget is! Icon) {
+                  return false;
+                }
+
+                return widget.icon == Icons.keyboard_arrow_left_sharp;
+              });
+
+              final rightArrow = find.byWidgetPredicate((widget) {
+                if (widget is! Icon) {
+                  return false;
+                }
+
+                return widget.icon == Icons.keyboard_arrow_right_sharp;
+              });
+
+              expect(leftArrow, findsOneWidget);
+              expect(rightArrow, findsOneWidget);
+
+              double realOffset() {
+                return tester
+                    .state<ScrollableState>(find.byType(Scrollable))
+                    .position
+                    .pixels;
+              }
+
+              double getMaxOffset() {
+                return tester
+                    .state<ScrollableState>(find.byType(Scrollable))
+                    .position
+                    .maxScrollExtent;
+              }
+
+              await tester.tap(leftArrow);
+              await tester.pumpAndSettle();
+              expect(realOffset(), equals(0));
+
+              await tester.tap(rightArrow);
+              await tester.pumpAndSettle();
+              expect(realOffset(), equals(getMaxOffset()));
+            },
+          );
+        },
+      );
     },
   );
 }
