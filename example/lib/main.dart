@@ -24,8 +24,8 @@ class _HomePageState extends State<HomePage> {
   static const double leftPadding = 50;
 
   final _defaultTimeRange = TimeRangeResult(
-    TimeOfDay(hour: 14, minute: 50),
-    TimeOfDay(hour: 15, minute: 20),
+    TimeOfDay(hour: 08, minute: 00),
+    TimeOfDay(hour: 20, minute: 00),
   );
   TimeRangeResult? _timeRange;
 
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
               firstTime: TimeOfDay(hour: 8, minute: 00),
               lastTime: TimeOfDay(hour: 20, minute: 00),
               initialRange: _timeRange,
-              timeStep: 10,
+              timeStep: 30,
               timeBlock: 30,
               onRangeCompleted: (range) => setState(() => _timeRange = range),
             ),

@@ -133,11 +133,13 @@ class _TimeListState extends State<TimeList> {
   }
 
   void _animateScroll(int index) {
+    if (index == -1) return;
     double offset = index < 0 ? 0 : index * itemExtent;
     if (offset > _scrollController.position.maxScrollExtent) {
       offset = _scrollController.position.maxScrollExtent;
     }
+    print('offset: $offset');
     _scrollController.animateTo(offset,
-        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 }
