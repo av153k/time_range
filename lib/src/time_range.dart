@@ -25,6 +25,7 @@ class TimeRange extends StatefulWidget {
   final TextStyle? activeTextStyle;
   final ScrollController? fromScrollController;
   final ScrollController? toScrollController;
+  final bool showScrollingArrows;
 
   TimeRange({
     Key? key,
@@ -46,6 +47,7 @@ class TimeRange extends StatefulWidget {
     this.activeTextStyle,
     this.fromScrollController,
     this.toScrollController,
+    this.showScrollingArrows = false,
   })  : assert(
             lastTime.after(firstTime), 'lastTime can not be before firstTime'),
         super(key: key);
@@ -103,6 +105,7 @@ class _TimeRangeState extends State<TimeRange> {
           textStyle: widget.textStyle,
           activeTextStyle: widget.activeTextStyle,
           scrollController: widget.fromScrollController,
+          showArrows: widget.showScrollingArrows,
         ),
         if (widget.toTitle != null)
           Padding(
@@ -124,6 +127,7 @@ class _TimeRangeState extends State<TimeRange> {
           textStyle: widget.textStyle,
           activeTextStyle: widget.activeTextStyle,
           scrollController: widget.toScrollController,
+          showArrows: widget.showScrollingArrows,
         ),
       ],
     );

@@ -19,6 +19,7 @@ class TimeList extends StatefulWidget {
   final TextStyle? textStyle;
   final TextStyle? activeTextStyle;
   final ScrollController? scrollController;
+  final bool showArrows;
 
   TimeList({
     Key? key,
@@ -34,7 +35,8 @@ class TimeList extends StatefulWidget {
     this.activeBackgroundColor,
     this.textStyle,
     this.activeTextStyle,
-    this.scrollController
+    this.scrollController,
+    this.showArrows = false,
   })  : assert(lastTime.afterOrEqual(firstTime),
             'lastTime not can be before firstTime'),
         super(key: key);
@@ -107,12 +109,13 @@ class _TimeListState extends State<TimeList> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          ArrowButton(
-            direction: ArrowDirection.left,
-            borderColor: widget.borderColor,
-            backgroundColor: widget.backgroundColor,
-            onTap: _scrollLeft,
-          ),
+          if (widget.showArrows)
+            ArrowButton(
+              direction: ArrowDirection.left,
+              borderColor: widget.borderColor,
+              backgroundColor: widget.backgroundColor,
+              onTap: _scrollLeft,
+            ),
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
@@ -140,12 +143,13 @@ class _TimeListState extends State<TimeList> {
               },
             ),
           ),
-          ArrowButton(
-            direction: ArrowDirection.right,
-            borderColor: widget.borderColor,
-            backgroundColor: widget.backgroundColor,
-            onTap: _scrollRight,
-          ),
+          if (widget.showArrows)
+            ArrowButton(
+              direction: ArrowDirection.right,
+              borderColor: widget.borderColor,
+              backgroundColor: widget.backgroundColor,
+              onTap: _scrollRight,
+            ),
         ],
       ),
     );

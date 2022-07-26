@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
               initialRange: _timeRange,
               timeStep: 10,
               timeBlock: 30,
+              showScrollingArrows: false,
               onRangeCompleted: (range) => setState(() => _timeRange = range),
             ),
             SizedBox(height: 30),
